@@ -13,11 +13,33 @@
   "paths": {
     "/transactions": {
       "get": {
-        "operationId": "getAllTransactionsOfRBC",
-        "parameters": [],
+        "operationId": "getAllTransactions",
+        "parameters": [
+          {
+            "name": "minAmount",
+            "in": "query",
+            "description": "Minimum transaction amount",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "maxAmount",
+            "in": "query",
+            "description": "Maximum transaction amount",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "Search transactions by description",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Get all transactions of RBC!!!!!",
+            "description": "Get all transactions",
             "schema": {
               "type": "array",
               "items": {
@@ -34,7 +56,7 @@
             "in": "body",
             "name": "transaction",
             "description": "Details of transaction we want to save",
-            "required": false,
+            "required": true,
             "schema": {
               "$ref": "#/definitions/Transaction"
             }
@@ -42,19 +64,48 @@
         ],
         "responses": {
           "201": {
-            "description": "Transaction created successfully"
+            "description": "Transaction created successfully",
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          },
+          "400": {
+            "description": "Invalid input"
           }
         }
       }
     },
     "/transactions/{id}": {
+      "get": {
+        "operationId": "getTransactionById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the Transaction",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction found",
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          },
+          "404": {
+            "description": "Transaction not found"
+          }
+        }
+      },
       "put": {
         "operationId": "updateTransactionById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "Id of the Transaction.",
+            "description": "Id of the Transaction",
             "required": true,
             "type": "string"
           },
@@ -62,7 +113,7 @@
             "in": "body",
             "name": "transaction",
             "description": "Details of the transaction",
-            "required": false,
+            "required": true,
             "schema": {
               "$ref": "#/definitions/Transaction"
             }
@@ -70,7 +121,36 @@
         ],
         "responses": {
           "200": {
-            "description": "Transaction updated successfully"
+            "description": "Transaction updated successfully",
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          },
+          "404": {
+            "description": "Transaction not found"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteTransactionById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the Transaction to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Transaction deleted successfully"
+          },
+          "404": {
+            "description": "Transaction not found"
           }
         }
       }
@@ -79,15 +159,29 @@
   "definitions": {
     "Transaction": {
       "type": "object",
+      "required": ["amount", "description"],
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "Unique identifier for the transaction"
         },
         "amount": {
-          "type": "number"
+          "type": "number",
+          "description": "Transaction amount"
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "Description of the transaction"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the transaction was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the transaction was last updated"
         }
       }
     }
