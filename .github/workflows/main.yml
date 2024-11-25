@@ -1,0 +1,41 @@
+name: Unpublish and Republish GitHub Pages
+
+on:
+  push:
+    branches:
+      - docs-test # Replace with the branch that triggers this action
+
+jobs:
+  manage-pages:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Step 2: Unpublish GitHub Pages (clear the `docs` folder)
+    - name: Unpublish GitHub Pages
+      run: |
+        rm -rf docs/*
+        echo "Temporary unpublishing" > docs/index.html
+        git config user.name "${{ secrets.GITHUB_ACTOR }}"
+        git config user.email "${{ secrets.GITHUB_ACTOR }}@users.noreply.github.com"
+        git add docs/
+        git commit -m "Unpublish GitHub Pages"
+        git push
+
+    # Step 3: Make updates (replace this with your update logic if needed)
+    - name: Update Swagger Docs
+      run: |
+        echo "<html><body><h1>Updated Docs</h1></body></html>" > docs/index.html
+        echo '{ "swagger": "2.0", "info": { "title": "API Docs", "version": "1.0.0" } }' > docs/swagger.json
+
+    # Step 4: Commit changes and republish
+    - name: Commit and Republish
+      run: |
+        git config user.name "${{ secrets.GITHUB_ACTOR }}"
+        git config user.email "${{ secrets.GITHUB_ACTOR }}@users.noreply.github.com"
+        git add docs/
+        git commit -m "Republish GitHub Pages with updated docs"
+        git push
