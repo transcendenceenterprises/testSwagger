@@ -91,5 +91,253 @@
         }
       }
     }
+  },
+  "/categories": {
+    "get": {
+      "operationId": "getAllCategories",
+      "responses": {
+        "200": {
+          "description": "List of all transaction categories",
+          "schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "operationId": "createCategory",
+      "parameters": [
+        {
+          "in": "body",
+          "name": "category",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/Category"
+          }
+        }
+      ],
+      "responses": {
+        "201": {
+          "description": "Category created successfully"
+        }
+      }
+    }
+  },
+
+  "/transactions/export": {
+    "get": {
+      "operationId": "exportTransactions",
+      "parameters": [
+        {
+          "name": "format",
+          "in": "query",
+          "type": "string",
+          "enum": ["CSV", "PDF", "EXCEL"],
+          "required": true
+        },
+        {
+          "name": "startDate",
+          "in": "query",
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "name": "endDate",
+          "in": "query",
+          "type": "string",
+          "format": "date"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Export file",
+          "schema": {
+            "type": "file"
+          }
+        }
+      }
+    }
+  },
+
+  "/templates": {
+    "get": {
+      "operationId": "getTransactionTemplates",
+      "responses": {
+        "200": {
+          "description": "List of transaction templates",
+          "schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/TransactionTemplate"
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "operationId": "createTemplate",
+      "parameters": [
+        {
+          "in": "body",
+          "name": "template",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/TransactionTemplate"
+          }
+        }
+      ],
+      "responses": {
+        "201": {
+          "description": "Template created successfully"
+        }
+      }
+    }
+  },
+
+  "/recurring-transactions": {
+    "get": {
+      "operationId": "getRecurringTransactions",
+      "responses": {
+        "200": {
+          "description": "List of recurring transactions",
+          "schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/RecurringTransaction"
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "operationId": "createRecurringTransaction",
+      "parameters": [
+        {
+          "in": "body",
+          "name": "recurringTransaction",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/RecurringTransaction"
+          }
+        }
+      ],
+      "responses": {
+        "201": {
+          "description": "Recurring transaction created successfully"
+        }
+      }
+    }
+  },
+
+  "/transactions/{id}/approve": {
+    "post": {
+      "operationId": "approveTransaction",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "in": "body",
+          "name": "approval",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/TransactionApproval"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Transaction approved successfully"
+        },
+        "403": {
+          "description": "Insufficient permissions"
+        }
+      }
+    }
+  },
+  "Category": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "parentCategoryId": {
+        "type": "string"
+      },
+      "budgetLimit": {
+        "type": "number"
+      }
+    }
+  },
+
+  "TransactionTemplate": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "amount": {
+        "type": "number"
+      },
+      "categoryId": {
+        "type": "string"
+      },
+      "defaultTags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+
+  "RecurringTransaction": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "transactionTemplate": {
+        "$ref": "#/definitions/TransactionTemplate"
+      },
+      "frequency": {
+        "type": "string",
+        "enum": ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]
+      },
+      "startDate": {
+        "type": "string",
+        "format": "date"
+      },
+      "endDate": {
+        "type": "string",
+        "format": "date"
+      },
+      "nextExecutionDate": {
+        "type": "string",
+        "format": "date"
+      },
+      "status": {
+        "type": "string",
+        "enum": ["ACTIVE", "PAUSED", "COMPLETED"]
+      }
+    }
   }
 }
