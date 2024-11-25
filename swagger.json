@@ -13,11 +13,11 @@
   "paths": {
     "/transactions": {
       "get": {
-        "operationId": "getAllTransactions",
+        "operationId": "getAllTransactionsOfRBC",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Get all transactions",
+            "description": "Get all transactions of RBC!!!!!",
             "schema": {
               "type": "array",
               "items": {
