@@ -1,0 +1,95 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "APIs to handle transactions.",
+    "version": "0.0.1",
+    "title": "Transaction details"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/transactions": {
+      "get": {
+        "operationId": "getAllTransactions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all transactions",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Transaction"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createTransaction",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "transaction",
+            "description": "Details of transaction we want to save",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Transaction created successfully"
+          }
+        }
+      }
+    },
+    "/transactions/{id}": {
+      "put": {
+        "operationId": "updateTransactionById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the Transaction.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "transaction",
+            "description": "Details of the transaction",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction updated successfully"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Transaction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
